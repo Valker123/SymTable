@@ -1,6 +1,6 @@
 /*--------------------------------------------------------------------*/
 /* symtable.h                                                         */
-/* Author: Vincent Liu                                                */
+/* Author: Vincent Liu & Rashmiya Hasan                               */
 /*--------------------------------------------------------------------*/
 #ifndef SYM_TABLE
 #define SYM_TABLE

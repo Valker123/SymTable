@@ -45,6 +45,7 @@ SymTable_T SymTable_free(SymTable_T oSymTable)
     psCurrentNode = psNextNode)
     {
         psNextNode = psCurrentNode->psNextNode;
+        free(psCurrentNode -> pcKey);
         free(psCurrentNode);
     }
     free(oSymTable);
@@ -60,19 +61,40 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
     for (psNode = oSymTable->psFirstNode; psNode -> psNextNode =! NULL; 
         psNode = psNode->psNextNode) 
     {
-        if (strcmp(pcKey, psNode) == 0) {
-            return 0;
+        if (strcmp(pcKey, psNode -> pcKey) == 0) {
+            return 1;
         }
     }
-    return 1;
+    return 0;
 }
 
 int SymTable_put(SymTable_T oSymTable, const char *pcKey, 
                 const void *pvValue) 
 {
+    if (SymTable_contains(oSymTable, pcKey) == 0) {
+        struct SymTableNode *psNewNode;
 
+        assert (oSymTable != NULL);
+        assert (pcKey != NULL);
+
+        psNewNode = 
+        (struct SymTableNode*)malloc(sizeof(struct SymTableNode));
+        if (psNewNode ==NULL) {
+            return 0;
+        }
+        psNewNode->pcKey = (const char*)malloc(strlen(pcKey) + 1);
+        if (psNewNode -> pcKey == NULL) {
+            return 0;
+        }
+        strcpy((char*)psNewNode->pcKey, pcKey);
+
+        psNewNode->pvValue = pvValue;
+        psNewNode->psNextNode = oSymTable->psFirstNode;
+        oSymTable->psFirstNode = psNewNode;
+        return 1;
+    }
+    return 0;
 }
-
 
 void Stack_map (SymTable_T oSymTable, void (*pfApply) 
                (void *pcKey, void *pvValue, void *pvExtra), 

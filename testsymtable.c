@@ -60,7 +60,6 @@ static void printBinding(const char *pcKey, void *pvValue,
    assert(pcKey != NULL);
    assert(pvValue != NULL);
    assert(pvExtra != NULL);
-
    printf((char*)pvExtra, pcKey, (char*)pvValue);
    fflush(stdout);
 }
