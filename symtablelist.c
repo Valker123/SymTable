@@ -124,12 +124,12 @@ void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
 
 void *SymTable_replace(SymTable_T oSymTable, const char *pcKey,
                        const void *pvValue) {
-    const void *psTemp;
+    void *psTemp;
     struct SymTableNode *psNode;
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
-    for (psNode = oSymTable->psFirstNode; psNode->psNextNode != NULL;
+    for (psNode = oSymTable->psFirstNode; psNode != NULL;
          psNode = psNode->psNextNode) {
         if (strcmp(pcKey, psNode->pcKey) == 0) {
             psTemp = psNode->pvValue;
