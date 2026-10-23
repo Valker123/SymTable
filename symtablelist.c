@@ -96,6 +96,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
     return 0;
 }
 
+
 void Stack_map (SymTable_T oSymTable, void (*pfApply) 
                (void *pcKey, void *pvValue, void *pvExtra), 
                const void *pvExtra)
