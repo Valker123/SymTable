@@ -108,12 +108,17 @@ size_t SymTable_getLength(SymTable_T oSymTable) {
     return oSymTable->counter;
 }
 
-void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
-    for (psNode = oSymTable->psFirstNode; psNode->psNextNode = !NULL;
+void *SymTable_get(SymTable_T oSymTable, const char *pcKey) 
+{
+    struct SymTableNode *psNode;
+    assert(oSymTable != NULL);
+    assert(pcKey != NULL);
+
+    for (psNode = oSymTable->psFirstNode; psNode->psNextNode != NULL;
          psNode = psNode->psNextNode) {
         if (strcmp(pcKey, psNode->pcKey) == 0) {
             return psNode->pvValue;
         }
-        return NULL;
     }
+    return NULL;
 }
