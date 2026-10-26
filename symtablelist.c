@@ -38,7 +38,7 @@ void SymTable_free(SymTable_T oSymTable) {
     assert(oSymTable != NULL);
 
     for (psCurrentNode = oSymTable->psFirstNode; psCurrentNode != NULL;
-        psCurrentNode = psNextNode) {
+         psCurrentNode = psNextNode) {
         psNextNode = psCurrentNode->psNextNode;
         free(psCurrentNode->pcKey);
         free(psCurrentNode);
@@ -62,8 +62,7 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 }
 
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
-                 const void *pvValue) 
-{
+                 const void *pvValue) {
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
@@ -71,7 +70,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         struct SymTableNode *psNewNode;
 
         psNewNode =
-        (struct SymTableNode *)malloc(sizeof(struct SymTableNode));
+            (struct SymTableNode *)malloc(sizeof(struct SymTableNode));
         if (psNewNode == NULL) {
             return 0;
         }
@@ -82,7 +81,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         }
         strcpy((char *)psNewNode->pcKey, pcKey);
 
-        psNewNode->pvValue = (void*) pvValue;
+        psNewNode->pvValue = (void *)pvValue;
         psNewNode->psNextNode = oSymTable->psFirstNode;
         oSymTable->psFirstNode = psNewNode;
         oSymTable->counter += 1;
@@ -92,9 +91,9 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
 }
 
 void SymTable_map(SymTable_T oSymTable,
-    void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
-    const void *pvExtra) 
-{
+                  void (*pfApply)(const char *pcKey, void *pvValue,
+                                  void *pvExtra),
+                  const void *pvExtra) {
     struct SymTableNode *psCurrentNode;
 
     assert(oSymTable != NULL);
@@ -123,7 +122,7 @@ void *SymTable_get(SymTable_T oSymTable, const char *pcKey) {
 
 void *SymTable_replace(SymTable_T oSymTable, const char *pcKey,
                        const void *pvValue) {
-    void *psTemp;
+    void *pvTemp;
     struct SymTableNode *psNode;
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
@@ -131,48 +130,43 @@ void *SymTable_replace(SymTable_T oSymTable, const char *pcKey,
     for (psNode = oSymTable->psFirstNode; psNode != NULL;
          psNode = psNode->psNextNode) {
         if (strcmp(pcKey, psNode->pcKey) == 0) {
-            psTemp = psNode->pvValue;
-            psNode->pvValue = (void*) pvValue;
-            return psTemp;
+            pvTemp = psNode->pvValue;
+            psNode->pvValue = (void *)pvValue;
+            return pvTemp;
         }
     }
     return NULL;
 }
 
-void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) 
-{
+void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
     struct SymTableNode *psCurrentNode;
     struct SymTableNode *psNextNode;
-    void *psTemp;
+    void *pvTemp;
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
     for (psCurrentNode = oSymTable->psFirstNode; psCurrentNode != NULL;
-        psCurrentNode = psNextNode) 
-        {
+         psCurrentNode = psNextNode) {
         psNextNode = psCurrentNode->psNextNode;
         /*case where the first node is the node that is to be removed*/
-            if (strcmp(pcKey, psCurrentNode->pcKey) == 0 && 
-            psCurrentNode == oSymTable->psFirstNode)
-            {
-                psTemp = psCurrentNode->pvValue;
-                oSymTable->psFirstNode = psNextNode;
-                free(psCurrentNode->pcKey);
-                free(psCurrentNode);
-                oSymTable->counter -= 1;
-                return psTemp;
-            }
-            else if (psNextNode != NULL &&
-                strcmp(pcKey, psNextNode->pcKey) == 0)
-            {
-                psTemp = psNextNode->pvValue;
-                psCurrentNode->psNextNode = psNextNode->psNextNode;
-                free(psNextNode->pcKey);
-                free(psNextNode);
-                oSymTable->counter -= 1;
-                return psTemp;
-                }
+        if (strcmp(pcKey, psCurrentNode->pcKey) == 0 &&
+            psCurrentNode == oSymTable->psFirstNode) {
+            pvTemp = psCurrentNode->pvValue;
+            oSymTable->psFirstNode = psNextNode;
+            free(psCurrentNode->pcKey);
+            free(psCurrentNode);
+            oSymTable->counter -= 1;
+            return pvTemp;
+        } else if (psNextNode != NULL &&
+                   strcmp(pcKey, psNextNode->pcKey) == 0) {
+            pvTemp = psNextNode->pvValue;
+            psCurrentNode->psNextNode = psNextNode->psNextNode;
+            free(psNextNode->pcKey);
+            free(psNextNode);
+            oSymTable->counter -= 1;
+            return pvTemp;
         }
+    }
     return NULL;
 }
 
