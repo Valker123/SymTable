@@ -71,7 +71,7 @@ void SymTable_free(SymTable_T oSymTable) {
 
     for (bucketTracker = 0; bucketTracker < oSymTable->numOfBuckets;
         bucketTracker++)
-        for (psCurrentNode = oSymTable->BUCKET_COUNTS[bucketTracker]; 
+        for (psCurrentNode = oSymTable->buckets[bucketTracker]; 
             psCurrentNode != NULL;
             psCurrentNode = psNextNode)
         {
