@@ -63,7 +63,8 @@ SymTable_T SymTable_new(void) {
     return oSymTable;
 }
 
-void SymTable_free(SymTable_T oSymTable) {
+void SymTable_free(SymTable_T oSymTable)
+{
     struct SymTableNode *psCurrentNode;
     struct SymTableNode *psNextNode;
     size_t bucketTracker;
@@ -79,5 +80,111 @@ void SymTable_free(SymTable_T oSymTable) {
             free(psCurrentNode->pcKey);
             free(psCurrentNode);
         }
+    free(oSymTable->buckets);
     free(oSymTable);
 }
+
+int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
+{
+    assert(oSymTable != NULL);
+    assert(pcKey != NULL);
+    struct SymTableNode *psNode;
+    size_t bucketTracker;
+    size_t keyInBucket = 
+    SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+
+    for (psNode = oSymTable->buckets[keyInBucket]; psNode != NULL;
+         psNode = psNode->psNextNode) {
+        if (strcmp(pcKey, psNode->pcKey) == 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+int SymTable_put(SymTable_T oSymTable, const char *pcKey,
+                 const void *pvValue) {
+    assert(oSymTable != NULL);
+    assert(pcKey != NULL);
+
+    size_t auBucketIndex;
+    size_t bucketTracker = 0;
+    size_t keyInBucket = 
+    SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+    struct SymTableNode **tempBuckets;
+
+    if (SymTable_contains(oSymTable, pcKey) == 0) {
+        struct SymTableNode *psNewNode;
+
+        psNewNode =
+            (struct SymTableNode *)malloc(sizeof(struct SymTableNode));
+        if (psNewNode == NULL) {
+            return 0;
+        }
+        psNewNode->pcKey = malloc(strlen(pcKey) + 1);
+        if (psNewNode->pcKey == NULL) {
+            free(psNewNode);
+            return 0;
+        }
+        strcpy((char *)psNewNode->pcKey, pcKey);
+
+        psNewNode->pvValue = (void *)pvValue;
+        psNewNode->psNextNode = oSymTable->buckets[keyInBucket];
+        oSymTable->buckets[keyInBucket] = psNewNode;
+        oSymTable->numOfBindings++;
+        
+        if (oSymTable -> numOfBindings > oSymTable -> numOfBuckets) {
+            /*loop through each index in the array. If the element
+            in the array is equal to the number of bindings then 
+            reallocate memory.*/
+            for (auBucketIndex = 0; 
+                auBucketIndex < sizeof(auBucketCounts); 
+                auBucketIndex++) 
+            {
+                if (auBucketCounts[auBucketIndex] == 
+                    oSymTable -> numOfBuckets)
+                {
+                    auBucketIndex++;
+                    /*setting a temperory pointer equal to where
+                    the address of the new memory. Then, set buckets
+                    pointer equal to the temporary pointer.*/
+                    tempBuckets = 
+                    (struct SymTableNode **)
+                    realloc(oSymTable -> buckets, 
+                    auBucketCounts[auBucketIndex]);
+
+                    oSymTable->buckets = tempBuckets;
+
+                    tempBuckets = NULL; 
+                    if (oSymTable->buckets == NULL) {
+                        free(oSymTable->buckets);
+                    }
+
+                    oSymTable->numOfBuckets =
+                    auBucketCounts[auBucketIndex];
+                    break;
+
+                }
+            }
+        }
+            for (oSymTable->buckets[bucketTracker]; )
+
+        return 1;
+    }
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
