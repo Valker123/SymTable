@@ -112,8 +112,9 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
     size_t keyInBucket = 
     SymTable_hash(pcKey, oSymTable -> numOfBuckets);
     size_t reHashKeyInBucket;
-    size_t auBucketCountsSize =
+    size_t auBucketSize =
     (sizeof(auBucketCounts) / sizeof(auBucketCounts[0]));
+    size_t nullBuckets;
     struct SymTableNode **tempBuckets;
     struct SymTableNode *psCurrentNode;
     struct SymTableNode *psNextNode;
@@ -139,36 +140,43 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         
         if (oSymTable -> numOfBindings > oSymTable -> numOfBuckets) {
             /*loop through each index in the array. If the element
-            in the array is equal to the number of bindings then 
+            in the array is greater than the number of bindings then 
             reallocate memory.*/
             for (auBucketIndex = 0; 
-                auBucketIndex < auBucketCountsSize; 
+                auBucketIndex < auBucketSize; 
                 auBucketIndex++) 
             {
                 if (auBucketCounts[auBucketIndex] == 
                     oSymTable -> numOfBuckets)
                 {
+                    /*creating temperory pointer to point to original 
+                    array*/
+                    tempBuckets = oSymTable->buckets;
                     auBucketIndex++;
-                    /*setting a temperory pointer equal to where
-                    the address of the new memory. Then, set buckets
-                    pointer equal to the temporary pointer.*/
-                    tempBuckets = 
-                    (struct SymTableNode **)
-                    realloc(oSymTable -> buckets, 
-                    auBucketCounts[auBucketIndex]);
+                    /*allocating memory for an array of pointers to 
+                    nodes*/
+                    oSymTable->buckets = 
+                    malloc(auBucketCounts[auBucketIndex] * 
+                        sizeof(struct SymTableNode *));
 
-                    oSymTable->buckets = tempBuckets;
-
-                    tempBuckets = NULL; 
-                    if (oSymTable->buckets == NULL) {
-                        free(oSymTable->buckets);
+                    if (oSymTable->buckets == NULL) 
+                    {
+                        free(oSymTable);
+                        return NULL;
                     }
 
-                    oSymTable->numOfBuckets =
-                    auBucketCounts[auBucketIndex];
+                    for (nullBuckets = 0; 
+                        nullBuckets < 
+                        auBucketCounts[auBucketIndex]; nullBuckets++)
+
+                    {
+                        oSymTable->buckets[nullBuckets] = NULL;
+                    }
+                    oSymTable->numOfBindings = 0;
+                    oSymTable->numOfBuckets = auBucketCounts[0];
                     break;
+                    }
                 }
-            }
         for (bucketTracker = 0; 
         bucketTracker < oSymTable->numOfBuckets;
         bucketTracker++)
