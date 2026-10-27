@@ -111,11 +111,15 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
     size_t bucketTracker = 0;
     size_t keyInBucket = 
     SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+    size_t reHashKeyInBucket;
+    size_t auBucketCountsSize =
+    (sizeof(auBucketCounts) / sizeof(auBucketCounts[0]));
     struct SymTableNode **tempBuckets;
+    struct SymTableNode *psCurrentNode;
+    struct SymTableNode *psNextNode;
 
     if (SymTable_contains(oSymTable, pcKey) == 0) {
         struct SymTableNode *psNewNode;
-
         psNewNode =
             (struct SymTableNode *)malloc(sizeof(struct SymTableNode));
         if (psNewNode == NULL) {
@@ -138,7 +142,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             in the array is equal to the number of bindings then 
             reallocate memory.*/
             for (auBucketIndex = 0; 
-                auBucketIndex < sizeof(auBucketCounts); 
+                auBucketIndex < auBucketCountsSize; 
                 auBucketIndex++) 
             {
                 if (auBucketCounts[auBucketIndex] == 
@@ -163,16 +167,30 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                     oSymTable->numOfBuckets =
                     auBucketCounts[auBucketIndex];
                     break;
-
+                }
+            }
+        for (bucketTracker = 0; 
+        bucketTracker < oSymTable->numOfBuckets;
+        bucketTracker++)
+        {
+            /*rehash the key in the new bucket in the expanded hash
+            table. Remove the old binding after reassigning key to
+            bucket*/
+            for (psCurrentNode = oSymTable->buckets[bucketTracker]; 
+            psCurrentNode != NULL;
+            psCurrentNode = psNextNode)
+            {
+                reHashKeyInBucket = SymTable_hash(psCurrentNode->pcKey, 
+                auBucketCounts[auBucketIndex]);
+                oSymTable->buckets[reHashKeyInBucket]=psCurrentNode;
                 }
             }
         }
-            for (oSymTable->buckets[bucketTracker]; )
-
         return 1;
-    }
+        }
     return 0;
 }
+  
 
 
 
