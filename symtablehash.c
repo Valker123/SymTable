@@ -21,7 +21,7 @@ struct SymTable {
     size_t numOfBindings;
     size_t numOfBuckets;
     /*pointer to pointer of a SymTable Node*/
-    struct SymTableNode **buckets; 
+    struct SymTableNode **buckets;
 };
 
 static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
@@ -104,22 +104,43 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
 
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                  const void *pvValue) {
-    assert(oSymTable != NULL);
-    assert(pcKey != NULL);
 
     size_t auBucketIndex;
     size_t bucketTracker = 0;
-    size_t keyInBucket = 
-    SymTable_hash(pcKey, oSymTable -> numOfBuckets);
     size_t reHashKeyInBucket;
     size_t auBucketSize =
     (sizeof(auBucketCounts) / sizeof(auBucketCounts[0]));
+    size_t preExpandBucket;
     size_t nullBuckets;
-    struct SymTableNode **tempBuckets;
+    size_t keyInBucket;
+    struct SymTableNode **oldBuckets;
+    struct SymTableNode **newBuckets;
     struct SymTableNode *psCurrentNode;
-    struct SymTableNode *psNextNode;
+    struct SymTableNode *psNodeNext;
+    struct SymTableNode *psFind;
+    enum nodeInTable {
+        IN_TABLE,
+        NOT_IN_TABLE,
+        UNKNOWN
+    };
+    enum nodeInTable nodeInTable = UNKNOWN;
 
-    if (SymTable_contains(oSymTable, pcKey) == 0) {
+    assert(oSymTable != NULL);
+    assert(pcKey != NULL);
+
+    keyInBucket = SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+    for (psFind = oSymTable->buckets[keyInBucket]; psFind != NULL;
+         psFind = psFind->psNextNode) {
+        if (strcmp(pcKey, psFind->pcKey) == 0) {
+            nodeInTable = IN_TABLE;
+            break;
+        }
+        else {
+            nodeInTable = NOT_IN_TABLE;
+        }
+    }
+
+    if (nodeInTable == NOT_IN_TABLE) {
         struct SymTableNode *psNewNode;
         psNewNode =
             (struct SymTableNode *)malloc(sizeof(struct SymTableNode));
@@ -138,79 +159,67 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         oSymTable->buckets[keyInBucket] = psNewNode;
         oSymTable->numOfBindings++;
         
-        if (oSymTable -> numOfBindings > oSymTable -> numOfBuckets) {
+        if (oSymTable -> numOfBindings > oSymTable -> numOfBuckets &&
+            oSymTable -> numOfBuckets != auBucketCounts[auBucketSize-1]) 
+            {
             /*loop through each index in the array. If the element
             in the array is greater than the number of bindings then 
             reallocate memory.*/
             for (auBucketIndex = 0; 
-                auBucketIndex < auBucketSize; 
-                auBucketIndex++) 
+                auBucketIndex < auBucketSize; auBucketIndex++) 
             {
                 if (auBucketCounts[auBucketIndex] == 
-                    oSymTable -> numOfBuckets)
+                    oSymTable -> numOfBuckets 
+                    && auBucketIndex < auBucketSize - 1)
                 {
+                    preExpandBucket = auBucketIndex;
+                    auBucketIndex++;
                     /*creating temperory pointer to point to original 
                     array*/
-                    tempBuckets = oSymTable->buckets;
-                    auBucketIndex++;
+                    oldBuckets = oSymTable->buckets;
                     /*allocating memory for an array of pointers to 
                     nodes*/
-                    oSymTable->buckets = 
+                    newBuckets = 
                     malloc(auBucketCounts[auBucketIndex] * 
                         sizeof(struct SymTableNode *));
-
-                    if (oSymTable->buckets == NULL) 
+                        
+                    if (newBuckets == NULL) 
                     {
-                        free(oSymTable);
-                        return NULL;
+                        return 1;
                     }
-
+                    oSymTable->buckets = newBuckets;
                     for (nullBuckets = 0; 
                         nullBuckets < 
                         auBucketCounts[auBucketIndex]; nullBuckets++)
-
                     {
                         oSymTable->buckets[nullBuckets] = NULL;
                     }
-                    oSymTable->numOfBindings = 0;
-                    oSymTable->numOfBuckets = auBucketCounts[0];
+                    oSymTable->numOfBuckets = 
+                    auBucketCounts[auBucketIndex];
                     break;
                     }
                 }
         for (bucketTracker = 0; 
-        bucketTracker < oSymTable->numOfBuckets;
+        bucketTracker < auBucketCounts[preExpandBucket];
         bucketTracker++)
         {
             /*rehash the key in the new bucket in the expanded hash
-            table. Remove the old binding after reassigning key to
-            bucket*/
-            for (psCurrentNode = oSymTable->buckets[bucketTracker]; 
+            table. Point the pointer in the new bucket to the node 
+            that contains the key*/
+            for (psCurrentNode = oldBuckets[bucketTracker]; 
             psCurrentNode != NULL;
-            psCurrentNode = psNextNode)
+            psCurrentNode = psNodeNext)
             {
+                psNodeNext = psCurrentNode->psNextNode;
                 reHashKeyInBucket = SymTable_hash(psCurrentNode->pcKey, 
                 auBucketCounts[auBucketIndex]);
-                oSymTable->buckets[reHashKeyInBucket]=psCurrentNode;
+                psCurrentNode -> psNextNode = oSymTable -> buckets[reHashKeyInBucket];
+                oSymTable->buckets[reHashKeyInBucket] = psCurrentNode;
                 }
             }
+            free(oldBuckets);
         }
         return 1;
         }
     return 0;
 }
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
