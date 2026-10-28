@@ -227,7 +227,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         enum nodeInTable
         {
             IN_TABLE,
-            NOT_IN_TABLE,
+            NOT_IN_TABLE
         };
         enum nodeInTable nodeInTable = NOT_IN_TABLE;
 
