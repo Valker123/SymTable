@@ -62,7 +62,8 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 }
 
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
-                 const void *pvValue) {
+                 const void *pvValue)
+    {
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
@@ -91,9 +92,9 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
 }
 
 void SymTable_map(SymTable_T oSymTable,
-                  void (*pfApply)(const char *pcKey, void *pvValue,
-                                  void *pvExtra),
-                  const void *pvExtra) {
+    void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
+    const void *pvExtra) 
+    {
     struct SymTableNode *psCurrentNode;
 
     assert(oSymTable != NULL);
