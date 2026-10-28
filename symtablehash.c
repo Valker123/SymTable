@@ -79,6 +79,8 @@ void SymTable_free(SymTable_T oSymTable)
             psNextNode = psCurrentNode->psNextNode;
             free(psCurrentNode->pcKey);
             free(psCurrentNode);
+            free(oSymTable->buckets);
+            free(oSymTable);
         }
 
 }
@@ -86,12 +88,12 @@ void SymTable_free(SymTable_T oSymTable)
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
 {
     struct SymTableNode *psNode;
-    size_t keyInBucket = 
-    SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+    size_t keyInBucket;
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
+    keyInBucket = SymTable_hash(pcKey, oSymTable -> numOfBuckets);
     for (psNode = oSymTable->buckets[keyInBucket]; psNode != NULL;
          psNode = psNode->psNextNode) {
         if (strcmp(pcKey, psNode->pcKey) == 0) {
@@ -226,9 +228,8 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         {
             IN_TABLE,
             NOT_IN_TABLE,
-            UNKNOWN
         };
-        enum nodeInTable nodeInTable = UNKNOWN;
+        enum nodeInTable nodeInTable = NOT_IN_TABLE;
 
         assert(oSymTable != NULL);
         assert(pcKey != NULL);
@@ -241,10 +242,6 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             {
                 nodeInTable = IN_TABLE;
                 break;
-            }
-            else
-            {
-                nodeInTable = NOT_IN_TABLE;
             }
         }
 
