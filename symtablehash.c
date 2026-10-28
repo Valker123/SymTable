@@ -164,6 +164,25 @@ size_t SymTable_getLength(SymTable_T oSymTable) {
     return oSymTable->numOfBindings;
 }
 
+void *SymTable_get(SymTable_T oSymTable, const char *pcKey)
+    {
+        struct SymTableNode *psNode;
+        size_t keyInBucket;
+        assert(oSymTable != NULL);
+        assert(pcKey != NULL);
+
+        keyInBucket = SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+
+        for (psNode = oSymTable->buckets[keyInBucket]; psNode != NULL;
+            psNode = psNode->psNextNode) {
+            if (strcmp(pcKey, psNode->pcKey) == 0) {
+            return psNode->pvValue;
+            }
+        }
+        return NULL;
+    }
+
+
 void SymTable_map(SymTable_T oSymTable,
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra) 
