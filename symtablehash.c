@@ -265,6 +265,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             psNewNode->psNextNode = oSymTable->buckets[keyInBucket];
             oSymTable->buckets[keyInBucket] = psNewNode;
             oSymTable->numOfBindings += 1;
+
             /*hash expansion condition*/
             if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
                 oSymTable->numOfBuckets != auBucketCounts[auBucketSize - 1]) 
@@ -272,9 +273,9 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             /*loop through each index in the array. If the element
             in the array is greater than the number of bindings then 
             reallocate memory.*/
-            for (auBucketIndex = 0; 
-                auBucketIndex < auBucketSize; auBucketIndex++) 
-            {
+                for (auBucketIndex = 0; 
+                    auBucketIndex < auBucketSize; auBucketIndex++) 
+                {
                 if (auBucketCounts[auBucketIndex] == 
                     oSymTable -> numOfBuckets 
                     && auBucketIndex < auBucketSize - 1)
@@ -303,9 +304,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                     }
                     oSymTable->numOfBuckets = 
                     auBucketCounts[auBucketIndex];
-                    break;
-                    }
-                }
+            
         for (bucketTracker = 0; 
         bucketTracker < auBucketCounts[preExpandBucket];
         bucketTracker++)
@@ -326,8 +325,11 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                 }
             }
             free(oldBuckets);
+            break;
+                }
+            }
         }
         return 1;
     }
     return 0;
-}
+    }
