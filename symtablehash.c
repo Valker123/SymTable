@@ -79,10 +79,9 @@ void SymTable_free(SymTable_T oSymTable)
             psNextNode = psCurrentNode->psNextNode;
             free(psCurrentNode->pcKey);
             free(psCurrentNode);
+        }
             free(oSymTable->buckets);
             free(oSymTable);
-        }
-
 }
 
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
