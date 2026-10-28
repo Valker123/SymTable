@@ -85,12 +85,12 @@ void SymTable_free(SymTable_T oSymTable)
 
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey)
 {
-    assert(oSymTable != NULL);
-    assert(pcKey != NULL);
     struct SymTableNode *psNode;
-    size_t bucketTracker;
     size_t keyInBucket = 
     SymTable_hash(pcKey, oSymTable -> numOfBuckets);
+
+    assert(oSymTable != NULL);
+    assert(pcKey != NULL);
 
     for (psNode = oSymTable->buckets[keyInBucket]; psNode != NULL;
          psNode = psNode->psNextNode) {
