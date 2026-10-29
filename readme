@@ -83,16 +83,19 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-   symtablelist.c: line 77: medium priority:
-   Do you want to validate 'pvValue' through an assert?
+symtablelist.c: line 77: medium priority: Do you want to validate 'pvValue' through an assert?
 
-   symtablelist.c: line 108: medium priority:
-   Do you want to validate 'pvExtra' through an assert?
+We disagree with this warning because the assignment specification does not require pvValue to be non-NULL. The symbol table stores the pointer without dereferencing it or making a copy of the object it points to. Therefore, a NULL value can be stored. Adding an assertion is not needed.
 
-   symtablelist.c: line 136: medium priority:
-   Do you want to validate 'pvValue' through an assert?
+symtablelist.c: line 108: medium priority: Do you want to validate 'pvExtra'through an assert?
 
-   We shouldn't need to validate pvValue and pvExtra since they can be NULL, so non-NULL assertions would incorrectly reject these perfectly valid calls. 
+We disagree with this warning because pvExtra is an optional parameter passed in SymTable_map. The function does not dereference pvExtra, it just passes it to callback. A NULL value can be valid when no additional data is required, so saying that pvExtra is not NULL would be uncessary. 
+
+symtablelist.c: line 136: medium priority: Do you want to validate 'pvValue' through an assert?
+
+We disagree with this warning for the same reason as the line 77 warning. SymTable_replace accepts a pointer to data owned by client, and does not dereference it. Since the interface does not specify that pvValue must be non-NULL, adding an assert is not needed. 
+
+In short, we shouldn't need to validate pvValue and pvExtra since they can be NULL, so non-NULL assertions would incorrectly reject these perfectly valid calls. 
 
 ------------------------------------------------------------------------
 What warnings does splint generate on symtablehash.c, and what are your
@@ -103,10 +106,7 @@ disagreement after each warning. If there are no warnings, then write
 symtablehash.c: (in function SymTable_expand)
 symtablehash.c:271:25: Value oSymTable->buckets[] used before definition
 
-Every bucket in the new bucket array is already initialized to NULL 
-before the rehashing. Then Symtable_hash function returns an index 
-within this array's bounds, so the bucket is already initialized 
-before it is read.
+Every bucket in the new bucket array is already initialized to NULL before the rehashing of existing bindings. Then Symtable_hash function returns an index within this array's bounds, so the bucket is already initialized before it is read. Splint just did not recognize this. 
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on symtablehash.c, and what are your
@@ -120,6 +120,8 @@ critTer symtablehash.c
    A loop should consist of fewer than 35 lines;
    this loop consists of 43 lines; consider refactoring
 
+This nesting occurs from going through all the existing buckets and their linked lists while at the same time relocating bindings during hash table expansion. The nested loops and conditionals implement the rehashing process. The nesting could probably be fixed via separating nested logic, but I do not believe this is a functional defect. The loop does the operations needed to expand the hash table and rehash its existing bindings.
+
    symtablehash.c: line 116: medium priority:
    Do you want to validate 'pvValue' through an assert?
 
@@ -129,8 +131,12 @@ critTer symtablehash.c
    symtablehash.c: line 285: medium priority:
    Do you want to validate 'pvValue' through an assert?
 
+The assignment specs does not requre pvExtra & pvValue to be not NULL. The symbol table never defreferences this pointer. A NULL value can be valid for pvExtra and pvValue, so asserting that pvExtra & pvValue is not NULL is not needed. 
+
    symtablehash.c: line 265: low priority: 
    This area is deeply nested at level 4, consider refactoring
+
+   This nesting occurs from going through all the existing buckets and their linked lists while at the same time relocating bindings during hash table expansion. The nested loops and conditionals implement the rehashing process. The nesting could probably be fixed via separating nested logic, but I do not believe this is a functional defect.  
 
 ------------------------------------------------------------------------
 What are the CPU times reported by testsymtable.c with binding counts
