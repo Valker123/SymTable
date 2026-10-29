@@ -3,7 +3,8 @@ Assignment 3 readme File
 ------------------------------------------------------------------------
 What is your name?
 
-
+Vincent Liu
+Rashmiya Hasan
 
 ------------------------------------------------------------------------
 What authorized sources of information did you use to complete the
@@ -12,7 +13,12 @@ in the "Policies" web page (also available on armlab in the file
 ~cos217/AuthorizedSourcesList ) to this section of the readme file,
 and edit it as appropriate.
 
-
+COS 217 lecture materials.
+COS 217 precept materials.
+COS 217 website.
+COS 217 textbooks.
+The man pages on the armlab cluster.
+COS 217 staff and/or current students on Ed.
 
 ------------------------------------------------------------------------
 What unauthorized sources of information did you use to complete the
@@ -26,7 +32,7 @@ interaction, may additionally require the interaction being reported
 to the Committee on Discipline. Write "None" if you used no
 unauthorized sources of information.
 
-
+Did not use unauthorized sources
 
 ------------------------------------------------------------------------
 In fulfillment of the requirement from section 2.4.3 of the Academic
@@ -36,7 +42,8 @@ enter your name in the space below the following affirmation:
 This paper represents my own work in accordance with University
 regulations.
 
-
+Vincent Liu
+Rashmiya Hasan
 
 ------------------------------------------------------------------------
 In fulfillment of the requirement from section 2.4.6 of the Academic
@@ -44,19 +51,19 @@ Regulations in Princeton's Rights, Rules, Responsibilities guide,
 and the COS 217 Generative AI policy, disclose and describe how you
 used AI in completing this assignment:
 
-
+Did not use AI. 
 
 ------------------------------------------------------------------------
 What is your assessment of the assignment? Was it helpful? Was it fun?
 
-
+This assignment was quite interesting. 
 
 ------------------------------------------------------------------------
 (optional) What information can you provide about your submission that
 will help your grader to grade it in the most favorable light? In
 particular, what bugs are in your submission?
 
-
+None.
 
 ------------------------------------------------------------------------
 What warnings does splint generate on symtablelist.c, and what are your
@@ -64,7 +71,7 @@ disagreements with them? Copy the splint warnings here, and express your
 disagreement after each warning. If there are no warnings, then write
 "None."
 
-None
+None.
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on symtablelist.c, and what are your
@@ -81,9 +88,7 @@ write "None."
    symtablelist.c: line 136: medium priority:
    Do you want to validate 'pvValue' through an assert?
 
-   We shouldn't need to validate pvValue and pvExtra since they
-    can be NULL, so non-NULL assertions would incorrectly reject
-    these perfectly valid calls. 
+   We shouldn't need to validate pvValue and pvExtra since they can be NULL, so non-NULL assertions would incorrectly reject these perfectly valid calls. 
 
 ------------------------------------------------------------------------
 What warnings does splint generate on symtablehash.c, and what are your
@@ -107,41 +112,7 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-
-
-------------------------------------------------------------------------
-What are the CPU times reported by testsymtable.c with binding counts
-50, 500, 5000, 50000, and 500000 using (1) your linked list
-implementation, (2) your non-expanding hash table implementation, and
-(3) your expanding hash table implementation? Fill in the blanks.
-
-The linked list implementation with:
--- 50 bindings consumed ________ seconds.
--- 500 bindings consumed ________ seconds.
--- 5000 bindings consumed ________ seconds.
--- 50000 bindings consumed ________ seconds.
--- 500000 bindings consumed ________ seconds.
-
-The non-expanding hash table implementation with:
--- 50 bindings consumed ________ seconds.
--- 500 bindings consumed ________ seconds.
--- 5000 bindings consumed ________ seconds.
--- 50000 bindings consumed ________ seconds.
--- 500000 bindings consumed ________ seconds.
-
-The expanding hash table implementation with:
--- 50 bindings consumed ________ seconds.
--- 500 bindings consumed ________ seconds.
--- 5000 bindings consumed ________ seconds.
--- 50000 bindings consumed ________ seconds.
--- 500000 bindings consumed ________ seconds.
-
-
-
-
 critTer symtablehash.c
-
-Checking symtablehash.c
 
    symtablehash.c: line 299: low priority: 
    A loop should consist of fewer than 35 lines;
@@ -170,3 +141,30 @@ Checking symtablehash.c
 
    symtablehash.c: line 340: low priority: 
    This area is deeply nested at level 6, consider refactoring
+
+------------------------------------------------------------------------
+What are the CPU times reported by testsymtable.c with binding counts
+50, 500, 5000, 50000, and 500000 using (1) your linked list
+implementation, (2) your non-expanding hash table implementation, and
+(3) your expanding hash table implementation? Fill in the blanks.
+
+The linked list implementation with:
+-- 50 bindings consumed ________ seconds.
+-- 500 bindings consumed ________ seconds.
+-- 5000 bindings consumed ________ seconds.
+-- 50000 bindings consumed ________ seconds.
+-- 500000 bindings consumed ________ seconds.
+
+The non-expanding hash table implementation with:
+-- 50 bindings consumed ________ seconds.
+-- 500 bindings consumed ________ seconds.
+-- 5000 bindings consumed ________ seconds.
+-- 50000 bindings consumed ________ seconds.
+-- 500000 bindings consumed ________ seconds.
+
+The expanding hash table implementation with:
+-- 50 bindings consumed ________ seconds.
+-- 500 bindings consumed ________ seconds.
+-- 5000 bindings consumed ________ seconds.
+-- 50000 bindings consumed ________ seconds.
+-- 500000 bindings consumed ________ seconds.
