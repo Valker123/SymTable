@@ -70,15 +70,26 @@ particular, what bugs are in your submission?
 None.
 
 ------------------------------------------------------------------------
+What warnings does splint generate on symtablelist.c, and what are your
+disagreements with them? Copy the splint warnings here, and express your
+disagreement after each warning. If there are no warnings, then write
+"None."
+
+None.
+
+------------------------------------------------------------------------
 What warnings does critTer generate on symtablelist.c, and what are your
 disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-   symtablelist.c: line 77: medium priority:
-   Do you want to validate 'pvValue' through an assert?
+symtablelist.c: line 76: medium priority:
+Do you want to validate 'pvValue' through an assert?
 
-symtablelist.c: line 108: medium priority: 
+We disagree because SymTable_put allows NULL as a binding's value.
+The table stores the value pointer without dereferencing it. 
+
+symtablelist.c: line 106: medium priority: 
 Do you want to validate 'pvExtra'through an assert?
 
 We disagree with this warning because pvExtra is an optional parameter 
@@ -87,10 +98,10 @@ just passes it to callback. A NULL value can be valid when no additional
 data is required, so saying that pvExtra is not NULL would be 
 uncessary. 
 
-symtablelist.c: line 136: medium priority: 
+symtablelist.c: line 134: medium priority: 
 Do you want to validate 'pvValue' through an assert?
 
-We disagree with this warning for the same reason as the line 77 
+We disagree with this warning for the same reason as the line 76 
 warning. SymTable_replace accepts a pointer to data owned by client, 
 and does not dereference it. Since the interface does not specify that 
 pvValue must be non-NULL, adding an assert is not needed. 
@@ -121,7 +132,7 @@ write "None."
 
 critTer symtablehash.c
 
-  symtablehash.c: line 232: low priority: 
+  symtablehash.c: line 237: low priority: 
    A loop should consist of fewer than 35 lines;
    this loop consists of 43 lines; consider refactoring
 
@@ -139,7 +150,7 @@ its existing bindings.
    symtablehash.c: line 198: medium priority:
    Do you want to validate 'pvExtra' through an assert?
 
-   symtablehash.c: line 285: medium priority:
+   symtablehash.c: line 290: medium priority:
    Do you want to validate 'pvValue' through an assert?
 
 The assignment specs does not requre pvExtra & pvValue to be not NULL. 
@@ -147,7 +158,7 @@ The symbol table never defreferences this pointer. A NULL value can be
 valid for pvExtra and pvValue, so asserting that pvExtra & pvValue is 
 not NULL is not needed. 
 
-   symtablehash.c: line 265: low priority: 
+   symtablehash.c: line 270: low priority: 
    This area is deeply nested at level 4, consider refactoring
 
    This nesting occurs from going through all the existing buckets and 
@@ -168,7 +179,7 @@ The linked list implementation with:
 -- 500 bindings consumed 0.000724 seconds.
 -- 5000 bindings consumed 0.139187 seconds.
 -- 50000 bindings consumed 24.711768 seconds.
--- 500000 bindings consumed over five minutes.
+-- 500000 bindings consumed more than five minutes.
 
 The non-expanding hash table implementation with:
 -- 50 bindings consumed 0.000000 seconds.
