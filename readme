@@ -75,13 +75,8 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
-symtablelist.c: line 77: medium priority: 
-Do you want to validate 'pvValue' through an assert?
-
-We disagree with this warning because the assignment specification does 
-not require pvValue to be non-NULL. The symbol table stores the pointer 
-without dereferencing it or making a copy of the object it points to. 
-Therefore, a NULL value can be stored. Adding an assertion is not needed.
+   symtablelist.c: line 77: medium priority:
+   Do you want to validate 'pvValue' through an assert?
 
 symtablelist.c: line 108: medium priority: 
 Do you want to validate 'pvExtra'through an assert?
