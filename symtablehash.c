@@ -11,17 +11,29 @@
 static const size_t 
 auBucketCounts[] = {509, 1021, 2039, 4093, 8191, 16381, 32749, 65521}; 
 
+/* A binding that contains a key, a value and a link to the next
+binding*/
 struct SymTableNode {
-    char *pcKey;
-    void *pvValue;
-    struct SymTableNode *psNextNode;
+    /* The dynamically allocated copy of the binding's key in which the
+    user defined*/
+    char* pcKey;
+    /* The associated value pointer. The client owns this value*/
+    void* pvValue;
+    /* The next binding in the list. This is equal to NULL if this is
+    the last binding */
+    struct SymTableNode* psNextNode;
 };
 
+/* A symbol table that is implemented as an array of buckets, with each
+bucket containing a linked list of bindings.*/
 struct SymTable {
+    /* The total number of bindings in the symbol table*/
     size_t numOfBindings;
+    /* The total number of buckets in the symbol table*/
     size_t numOfBuckets;
-    /*pointer to pointer of a SymTable Node*/
-    struct SymTableNode **buckets;
+    /* A pointer to a dynamically allocated array of pointers to the
+    first binding in each bucket. An empty bucket contains NULL. */
+    struct SymTableNode** buckets;
 };
 
 static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
@@ -332,4 +344,4 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         return 1;
     }
     return 0;
-    }
+}

@@ -8,15 +8,26 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* A binding that contains a key, a value, and a link to the next
+binding */
 struct SymTableNode {
-    char *pcKey;
-    void *pvValue;
-    struct SymTableNode *psNextNode;
+    /* The dynamically allocated copy of the binding's key in which the
+    user defined*/
+    char* pcKey;
+    /* The associated value pointer. The client owns this value*/
+    void* pvValue;
+    /* The next binding in the list. This is equal to NULL if this is
+    the last binding */
+    struct SymTableNode* psNextNode;
 };
 
+/* A symbol table implemented as a linked list of bindings. */
 struct SymTable {
+    /* The number of bindings in the table. */
     size_t counter;
-    struct SymTableNode *psFirstNode;
+    /*A pointer to the first binding in the list, or NULL if the table
+    is empty */
+    struct SymTableNode* psFirstNode;
 };
 
 SymTable_T SymTable_new(void) {
