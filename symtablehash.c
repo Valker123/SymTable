@@ -265,6 +265,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             {
                 return 0;
             }
+            /* Makes a defensive copy of the key; the table owns copy */
             psNewNode->pcKey = malloc(strlen(pcKey) + 1);
             if (psNewNode->pcKey == NULL)
             {
