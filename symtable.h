@@ -56,6 +56,6 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey);
 able to pass pvExtra as an extra parameter. */
 void SymTable_map(SymTable_T oSymTable,
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
-        const void *pvExtra);
+    const void *pvExtra);
 
 #endif
