@@ -8,9 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* The supported bucket counts for the hash table from the initial size
-to the maximum size*/
-static const size_t
+static const size_t 
 auBucketCounts[] = {509, 1021, 2039, 4093, 8191, 16381, 32749, 65521}; 
 
 /* A binding that contains a key, a value and a link to the next
@@ -38,10 +36,7 @@ struct SymTable {
     struct SymTableNode** buckets;
 };
 
-/*Returns a hash code for the user provided pcKey between 0 and the
-the number of buckets within the array. pcKey must not be NULL, and
-uBucketCount must be greater than zero. */
-static size_t SymTable_hash(const char* pcKey, size_t uBucketCount)
+static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
 {
    const size_t HASH_MULTIPLIER = 65599;
    size_t u;
