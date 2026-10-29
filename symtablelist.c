@@ -11,8 +11,8 @@
 /* A binding that contains a key, a value, and a link to the next
 binding */
 struct SymTableNode {
-    /* The dynamically allocated copy of the binding's key in which the
-    user defined*/
+    /* The dynamically allocated copy of the binding's key, owned by
+    the table*/
     char* pcKey;
     /* The associated value pointer. The client owns this value*/
     void* pvValue;
@@ -73,8 +73,7 @@ int SymTable_contains(SymTable_T oSymTable, const char *pcKey) {
 }
 
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
-                 const void *pvValue)
-    {
+                 const void *pvValue) {
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
 
@@ -91,7 +90,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             free(psNewNode);
             return 0;
         }
-        strcpy((char *)psNewNode->pcKey, pcKey);
+        strcpy(psNewNode->pcKey, pcKey);
 
         psNewNode->pvValue = (void *)pvValue;
         psNewNode->psNextNode = oSymTable->psFirstNode;
@@ -104,8 +103,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
 
 void SymTable_map(SymTable_T oSymTable,
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
-    const void *pvExtra) 
-    {
+    const void *pvExtra) {
     struct SymTableNode *psCurrentNode;
 
     assert(oSymTable != NULL);
@@ -113,8 +111,8 @@ void SymTable_map(SymTable_T oSymTable,
 
     for (psCurrentNode = oSymTable->psFirstNode; psCurrentNode != NULL;
          psCurrentNode = psCurrentNode->psNextNode) {
-        (*pfApply)((void *)psCurrentNode->pcKey,
-                   (void *)psCurrentNode->pvValue, (void *)pvExtra);
+        (*pfApply)(psCurrentNode->pcKey,
+                   psCurrentNode->pvValue, pvExtra);
     }
 }
 
@@ -161,8 +159,8 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
          psCurrentNode = psNextNode) {
         psNextNode = psCurrentNode->psNextNode;
         /*case where the first node is the node that is to be removed*/
-        if (strcmp(pcKey, psCurrentNode->pcKey) == 0 &&
-            psCurrentNode == oSymTable->psFirstNode) {
+        if (psCurrentNode == oSymTable->psFirstNode &&
+            strcmp(pcKey, psCurrentNode->pcKey) == 0) {
             pvTemp = psCurrentNode->pvValue;
             oSymTable->psFirstNode = psNextNode;
             free(psCurrentNode->pcKey);

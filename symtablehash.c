@@ -147,8 +147,8 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
          psCurrentNode != NULL; psCurrentNode = psNextNode) {
         psNextNode = psCurrentNode->psNextNode;
         /*case where the first node is the node that is to be removed*/
-        if (strcmp(pcKey, psCurrentNode->pcKey) == 0 &&
-            psCurrentNode == oSymTable->buckets[keyInBucket]) {
+        if (psCurrentNode == oSymTable->buckets[keyInBucket] &&
+            strcmp(pcKey, psCurrentNode->pcKey) == 0) {
             pvTemp = psCurrentNode->pvValue;
             oSymTable->buckets[keyInBucket] = psNextNode;
             free(psCurrentNode->pcKey);
@@ -206,13 +206,16 @@ void SymTable_map(SymTable_T oSymTable,
         for (psCurrentNode = oSymTable->buckets[bucketTracker];
              psCurrentNode != NULL;
              psCurrentNode = psCurrentNode->psNextNode) {
-            (*pfApply)((void *)psCurrentNode->pcKey,
-                       (void *)psCurrentNode->pvValue, (void *)pvExtra);
+            (*pfApply)(psCurrentNode->pcKey,
+                       psCurrentNode->pvValue, (void *)pvExtra);
         }
     }
 }
 
-/* This helper function expands the bucket array of oSymTable. */
+/* Expands oSymTable to the next permitted bucket count and rehashes
+its bindings. This function leaves the table unchanged if allocation
+fails or the  maximum bucket count has been reached. oSymTable must not
+be NULL*/
 static void SymTable_expand(SymTable_T oSymTable) {
     size_t bucketTracker = 0;
     size_t reHashKeyInBucket;
@@ -224,7 +227,9 @@ static void SymTable_expand(SymTable_T oSymTable) {
     struct SymTableNode **oldBuckets;
     struct SymTableNode **newBuckets;
     struct SymTableNode *psCurrentNode;
-    struct SymTableNode *psNodeNext;
+    struct SymTableNode* psNodeNext;
+
+    assert(oSymTable != NULL);
 
     /*loop through each index in the auBuckets array to find
     current bucket count, the next entry is the new count */
@@ -317,7 +322,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             free(psNewNode);
             return 0;
         }
-        strcpy((char *)psNewNode->pcKey, pcKey);
+        strcpy(psNewNode->pcKey, pcKey);
 
         psNewNode->pvValue = (void *)pvValue;
         psNewNode->psNextNode = oSymTable->buckets[keyInBucket];
