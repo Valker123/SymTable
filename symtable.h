@@ -30,14 +30,14 @@ the symbol table. This function returns 1, if a binding was successfully
 added. This function returns a 0 if the key that the user provided
 is already in the symbol table or insufficient memory is available to
 add the binding. oSymtable and pcKey must not be NULL.*/
-int SymTable_put(SymTable_T oSymTable, const char *pcKey,
-                 const void *pvValue);
+int SymTable_put(SymTable_T oSymTable, 
+    const char *pcKey, const void *pvValue);
 
 /*If oSymTable contains a binding with key pcKey, then the value of the
 binding is replaced with pvValue and returns the old value.
 Otherwise does not change oSymTable and returns NULL.*/
-void *SymTable_replace(SymTable_T oSymTable, const char *pcKey,
-                       const void *pvValue);
+void *SymTable_replace(SymTable_T oSymTable, 
+    const char *pcKey, const void *pvValue);
 
 /*Return 1 (True) if oSymTable contains a binding with key pcKey, or
 returns 0 (False) otherwise. */
@@ -55,8 +55,7 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey);
 /* Apply function pointer pfApply to each binding in oSymTable, also
 able to pass pvExtra as an extra parameter. */
 void SymTable_map(SymTable_T oSymTable,
-                  void (*pfApply)(const char *pcKey, void *pvValue,
-                                  void *pvExtra),
-                  const void *pvExtra);
+    void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
+        const void *pvExtra);
 
 #endif
