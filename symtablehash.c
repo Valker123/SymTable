@@ -328,7 +328,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         oSymTable->buckets[keyInBucket] = psNewNode;
         oSymTable->numOfBindings += 1;
         /*Calls the expand helper function*/
-        SymTable_expand(oSymTable);
+        /*SymTable_expand(oSymTable);*/
         return 1;
     }
     return 0;
