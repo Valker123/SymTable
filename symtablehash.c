@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*The possible number of buckets in increasing order. A SymTable starts
+with the first and moves to the next when it expands. */
 static const size_t 
 auBucketCounts[] = {509, 1021, 2039, 4093, 8191, 16381, 32749, 65521}; 
 
@@ -36,6 +38,8 @@ struct SymTable {
     struct SymTableNode** buckets;
 };
 
+/* Return a hash code for pcKey that is between 0 and uBucketCount-1, 
+inclusive. */
 static size_t SymTable_hash(const char *pcKey, size_t uBucketCount)
 {
    const size_t HASH_MULTIPLIER = 65599;
@@ -89,6 +93,7 @@ void SymTable_free(SymTable_T oSymTable)
             psCurrentNode = psNextNode)
         {
             psNextNode = psCurrentNode->psNextNode;
+            /* Free the key (owned by table) and node, but not value */
             free(psCurrentNode->pcKey);
             free(psCurrentNode);
         }
@@ -159,7 +164,9 @@ void *SymTable_remove(SymTable_T oSymTable, const char *pcKey) {
             free(psCurrentNode);
             oSymTable->numOfBindings -= 1;
             return pvTemp;
-        } else if (psNextNode != NULL &&
+        } 
+        /* case where the node to be removed is not the first node */
+        else if (psNextNode != NULL &&
                    strcmp(pcKey, psNextNode->pcKey) == 0) {
             pvTemp = psNextNode->pvValue;
             psCurrentNode->psNextNode = psNextNode->psNextNode;
@@ -245,6 +252,8 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         assert(oSymTable != NULL);
         assert(pcKey != NULL);
 
+        /* Hash the key once, then search only that bucket for a
+        duplicate key */
         keyInBucket = SymTable_hash(pcKey, oSymTable->numOfBuckets);
         for (psFind = oSymTable->buckets[keyInBucket]; psFind != NULL;
              psFind = psFind->psNextNode)
@@ -283,9 +292,8 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
             if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
                 oSymTable->numOfBuckets != auBucketCounts[auBucketSize - 1]) 
             {
-            /*loop through each index in the array. If the element
-            in the array is greater than the number of bindings then 
-            reallocate memory.*/
+            /*loop through each index in the auBuckets array to find
+            current bucket count, the next entry is the new count */
                 for (auBucketIndex = 0; 
                     auBucketIndex < auBucketSize; auBucketIndex++) 
                 {
@@ -295,11 +303,12 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                 {
                     preExpandBucket = auBucketIndex;
                     auBucketIndex++;
-                    /*creating temperory pointer to point to original 
+                    /*creating temporary pointer to point to original 
                     array*/
                     oldBuckets = oSymTable->buckets;
-                    /*allocating memory for an array of pointers to 
-                    nodes*/
+                    /*allocating memory for the new bucket array,
+                    an array of pointers to nodes. If it fails, keep
+                    using old array; new binding was already added. */
                     newBuckets = 
                     malloc(auBucketCounts[auBucketIndex] * 
                         sizeof(struct SymTableNode *));
@@ -317,7 +326,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                     }
                     oSymTable->numOfBuckets = 
                     auBucketCounts[auBucketIndex];
-            
+        
         for (bucketTracker = 0; 
         bucketTracker < auBucketCounts[preExpandBucket];
         bucketTracker++)
@@ -337,6 +346,8 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                 oSymTable->buckets[reHashKeyInBucket] = psCurrentNode;
                 }
             }
+            /*Free the old bucket array only, the nodes are in the new
+            array. */
             free(oldBuckets);
             break;
                 }
