@@ -331,11 +331,11 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         /*hash expansion condition. The hash table expands when the
         number of bindings exceeds the number of buckets and the number
         of buckets is not the last bucket size in the auBuckets array*/
-        /*if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
+        if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
             oSymTable->numOfBuckets !=
                 auBucketCounts[auBucketSize - 1]) {
             SymTable_expand(oSymTable);
-        }*/
+        }
         return 1;
     }
     return 0;
