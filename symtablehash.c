@@ -284,7 +284,9 @@ static void SymTable_expand(SymTable_T oSymTable) {
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                  const void *pvValue) {
     size_t keyInBucket;
-    struct SymTableNode *psFind;
+    struct SymTableNode* psFind;
+    size_t auBucketSize =
+        (sizeof(auBucketCounts) / sizeof(auBucketCounts[0]));
     enum nodeInTable { IN_TABLE, NOT_IN_TABLE };
     enum nodeInTable nodeInTable = NOT_IN_TABLE;
 
