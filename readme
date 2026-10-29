@@ -96,10 +96,8 @@ disagreements with them? Copy the splint warnings here, and express your
 disagreement after each warning. If there are no warnings, then write
 "None."
 
-Splint error: symtablehash.c: (in function SymTable_put)
-symtablehash.c:323:17: Value oSymTable->buckets[] used before definition
-An rvalue is used that may not be initialized to a value on some execution
-path. (Use -usedef to inhibit warning)
+symtablehash.c: (in function SymTable_expand)
+symtablehash.c:271:25: Value oSymTable->buckets[] used before definition
 
 Every bucket in the new bucket array is already initialized to NULL 
 before the rehashing. Then Symtable_hash function returns an index 
@@ -114,33 +112,21 @@ write "None."
 
 critTer symtablehash.c
 
-   symtablehash.c: line 299: low priority: 
+  symtablehash.c: line 232: low priority: 
    A loop should consist of fewer than 35 lines;
-   this loop consists of 49 lines; consider refactoring
+   this loop consists of 43 lines; consider refactoring
 
-   symtablehash.c: line 123: medium priority:
+   symtablehash.c: line 116: medium priority:
    Do you want to validate 'pvValue' through an assert?
 
-   symtablehash.c: line 209: medium priority:
+   symtablehash.c: line 198: medium priority:
    Do you want to validate 'pvExtra' through an assert?
 
-   symtablehash.c: line 231: medium priority:
+   symtablehash.c: line 285: medium priority:
    Do you want to validate 'pvValue' through an assert?
 
-   symtablehash.c: line 303: low priority: 
+   symtablehash.c: line 265: low priority: 
    This area is deeply nested at level 4, consider refactoring
-
-   symtablehash.c: line 317: low priority: 
-   This area is deeply nested at level 5, consider refactoring
-
-   symtablehash.c: line 324: low priority: 
-   This area is deeply nested at level 5, consider refactoring
-
-   symtablehash.c: line 333: low priority: 
-   This area is deeply nested at level 5, consider refactoring
-
-   symtablehash.c: line 340: low priority: 
-   This area is deeply nested at level 6, consider refactoring
 
 ------------------------------------------------------------------------
 What are the CPU times reported by testsymtable.c with binding counts
