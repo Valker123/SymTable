@@ -228,8 +228,7 @@ static void SymTable_expand(SymTable_T oSymTable) {
     struct SymTableNode *psNodeNext;
 
     /*hash expansion condition*/
-    if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
-        oSymTable->numOfBuckets != auBucketCounts[auBucketSize - 1]) {
+    
         /*loop through each index in the auBuckets array to find
         current bucket count, the next entry is the new count */
         for (auBucketIndex = 0; auBucketIndex < auBucketSize;
@@ -285,7 +284,6 @@ static void SymTable_expand(SymTable_T oSymTable) {
             }
         }
     }
-}
 
 int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                  const void *pvValue) {
@@ -293,6 +291,8 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
     struct SymTableNode *psFind;
     enum nodeInTable { IN_TABLE, NOT_IN_TABLE };
     enum nodeInTable nodeInTable = NOT_IN_TABLE;
+    size_t auBucketSize =
+        (sizeof(auBucketCounts) / sizeof(auBucketCounts[0]));
 
     assert(oSymTable != NULL);
     assert(pcKey != NULL);
@@ -328,8 +328,11 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         oSymTable->buckets[keyInBucket] = psNewNode;
         oSymTable->numOfBindings += 1;
         /*Calls the expand helper function*/
-        SymTable_expand(oSymTable);
-        return 1;
+        if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
+            oSymTable->numOfBuckets != auBucketCounts[auBucketSize - 1]) {
+            SymTable_expand(oSymTable);
+        }
+            return 1;
     }
     return 0;
 }
