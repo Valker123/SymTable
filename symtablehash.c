@@ -212,6 +212,9 @@ void SymTable_map(SymTable_T oSymTable,
     }
 }
 
+/* This is the helper function for SymTable_put that runs the 
+hash table expansion logic. If number of bindings exceeds numbers of 
+buckets, the hash table expands. */
 static void SymTable_expand(SymTable_T oSymTable) {
     size_t bucketTracker = 0;
     size_t reHashKeyInBucket;
