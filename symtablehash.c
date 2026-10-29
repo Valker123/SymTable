@@ -226,8 +226,6 @@ static void SymTable_expand(SymTable_T oSymTable) {
     struct SymTableNode **newBuckets;
     struct SymTableNode *psCurrentNode;
     struct SymTableNode *psNodeNext;
-
-    /*hash expansion condition*/
     
         /*loop through each index in the auBuckets array to find
         current bucket count, the next entry is the new count */
@@ -291,7 +289,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
     struct SymTableNode *psFind;
     enum nodeInTable { IN_TABLE, NOT_IN_TABLE };
     enum nodeInTable nodeInTable = NOT_IN_TABLE;
-    size_t auBucketSize =
+        size_t auBucketSize =
         (sizeof(auBucketCounts) / sizeof(auBucketCounts[0]));
 
     assert(oSymTable != NULL);
