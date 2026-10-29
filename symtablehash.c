@@ -212,8 +212,7 @@ void SymTable_map(SymTable_T oSymTable,
     }
 }
 
-/* This helper function expands the bucket array of oSymTable when 
-the number of bindings exceeds the number of buckets. */
+/* This helper function expands the bucket array of oSymTable. */
 static void SymTable_expand(SymTable_T oSymTable) {
     size_t bucketTracker = 0;
     size_t reHashKeyInBucket;
@@ -325,7 +324,9 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         psNewNode->psNextNode = oSymTable->buckets[keyInBucket];
         oSymTable->buckets[keyInBucket] = psNewNode;
         oSymTable->numOfBindings += 1;
-        /*Calls the expand helper function*/
+        /*hash expansion condition. The hash table expands when the 
+        number of bindings exceeds the number of buckets and the number
+        of buckets is not the last bucket size in the auBuckets array*/
         if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
             oSymTable->numOfBuckets != auBucketCounts[auBucketSize - 1]) {
             SymTable_expand(oSymTable);
