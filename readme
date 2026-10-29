@@ -64,7 +64,7 @@ disagreements with them? Copy the splint warnings here, and express your
 disagreement after each warning. If there are no warnings, then write
 "None."
 
-
+None
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on symtablelist.c, and what are your
@@ -72,7 +72,18 @@ disagreements with them? Copy the critTer warnings here, and express
 your disagreement after each warning. If there are no warnings, then
 write "None."
 
+   symtablelist.c: line 77: medium priority:
+   Do you want to validate 'pvValue' through an assert?
 
+   symtablelist.c: line 108: medium priority:
+   Do you want to validate 'pvExtra' through an assert?
+
+   symtablelist.c: line 136: medium priority:
+   Do you want to validate 'pvValue' through an assert?
+
+   We shouldn't need to validate pvValue and pvExtra since they
+    can be NULL, so non-NULL assertions would incorrectly reject
+    these perfectly valid calls. 
 
 ------------------------------------------------------------------------
 What warnings does splint generate on symtablehash.c, and what are your
@@ -85,7 +96,10 @@ symtablehash.c:323:17: Value oSymTable->buckets[] used before definition
 An rvalue is used that may not be initialized to a value on some execution
 path. (Use -usedef to inhibit warning)
 
-Every bucket in the new bucket array is already initialized to NULL before the rehashing. Then Symtable_hash function returns an index within this array's bounds, so the bucket is already initialized before it is read.
+Every bucket in the new bucket array is already initialized to NULL 
+before the rehashing. Then Symtable_hash function returns an index 
+within this array's bounds, so the bucket is already initialized 
+before it is read.
 
 ------------------------------------------------------------------------
 What warnings does critTer generate on symtablehash.c, and what are your
