@@ -13,8 +13,8 @@ pointer to data of any type. The symbol table owns its keys but not its
 values. */
 typedef struct SymTable *SymTable_T;
 
-/*Returns a new symbol table without any initialized bindings. Returns
-NULL if memory allocation fails for this new symbol table*/
+/*Returns a new symbol table containing no bindings. Returns NULL if 
+memory allocation fails for this new symbol table*/
 SymTable_T SymTable_new(void);
 
 /*Frees all memory occupied by oSymTable, which
@@ -36,25 +36,29 @@ int SymTable_put(SymTable_T oSymTable,
 
 /*If oSymTable contains a binding with key pcKey, then the value of the
 binding is replaced with pvValue and returns the old value.
-Otherwise does not change oSymTable and returns NULL.*/
+Otherwise does not change oSymTable and returns NULL. oSymTable and 
+pcKey must not be NULL.*/
 void *SymTable_replace(SymTable_T oSymTable, 
     const char *pcKey, const void *pvValue);
 
 /*Return 1 (True) if oSymTable contains a binding with key pcKey, or
-returns 0 (False) otherwise. */
+returns 0 (False) otherwise. oSymTable and pcKey must not be NULL.*/
 int SymTable_contains(SymTable_T oSymTable, const char *pcKey);
 
 /*Returns the value of the binding in oSymTable with key pcKey,
-or returns NULL if no such binding exists.*/
+or returns NULL if no such binding exists. oSymTable and pcKey must 
+not be NULL.*/
 void *SymTable_get(SymTable_T oSymTable, const char *pcKey);
 
 /*If oSymTable contains a binding with key pcKey, then that binding
 from oSymTable is removed and the binding's value is returned.
-Otherwise oSymTable is not changed and returns NULL. */
+Otherwise oSymTable is not changed and returns NULL. oSymTable and pcKey 
+must not be NULL.*/
 void *SymTable_remove(SymTable_T oSymTable, const char *pcKey);
 
-/* Apply function pointer pfApply to each binding in oSymTable, also
-able to pass pvExtra as an extra parameter. */
+/* Calls the function pointer, pfApply, once for each binding in 
+oSymTable, passing the binding's key, value, and pvExtra. oSymTable and
+pcKey must not be NULL.*/
 void SymTable_map(SymTable_T oSymTable,
     void (*pfApply)(const char *pcKey, void *pvValue, void *pvExtra),
     const void *pvExtra);
