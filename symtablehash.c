@@ -298,7 +298,7 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
                     array*/
                     oldBuckets = oSymTable->buckets;
                     /*allocating memory for an array of pointers to 
-                    nodes*/
+                    nodes. newBuckets points to newly allocated array*/
                     newBuckets = 
                     malloc(auBucketCounts[auBucketIndex] * 
                         sizeof(struct SymTableNode *));
