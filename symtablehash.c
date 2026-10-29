@@ -212,8 +212,7 @@ void SymTable_map(SymTable_T oSymTable,
     }
 }
 
-/* This helper function expands the bucket array of oSymTable when 
-the number of bindings exceeds the number of buckets. */
+/* This helper function expands the bucket array of oSymTable. */
 static void SymTable_expand(SymTable_T oSymTable) {
     size_t bucketTracker = 0;
     size_t reHashKeyInBucket;
@@ -227,62 +226,57 @@ static void SymTable_expand(SymTable_T oSymTable) {
     struct SymTableNode *psCurrentNode;
     struct SymTableNode *psNodeNext;
 
-    /*hash expansion condition*/
-    if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
-        oSymTable->numOfBuckets != auBucketCounts[auBucketSize - 1]) {
-        /*loop through each index in the auBuckets array to find
-        current bucket count, the next entry is the new count */
-        for (auBucketIndex = 0; auBucketIndex < auBucketSize;
-             auBucketIndex++) {
-            if (auBucketCounts[auBucketIndex] ==
-                    oSymTable->numOfBuckets &&
-                auBucketIndex < auBucketSize - 1) {
-                preExpandBucket = auBucketIndex;
-                auBucketIndex++;
-                /*creating temporary pointer to point to original
-                array*/
-                oldBuckets = oSymTable->buckets;
-                /*allocating memory for the new bucket array,
-                an array of pointers to nodes. If it fails, keep
-                using old array; new binding was already added. */
-                newBuckets = malloc(auBucketCounts[auBucketIndex] *
-                                    sizeof(struct SymTableNode *));
+    /*loop through each index in the auBuckets array to find
+    current bucket count, the next entry is the new count */
+    for (auBucketIndex = 0; auBucketIndex < auBucketSize;
+         auBucketIndex++) {
+        if (auBucketCounts[auBucketIndex] == oSymTable->numOfBuckets &&
+            auBucketIndex < auBucketSize - 1) {
+            preExpandBucket = auBucketIndex;
+            auBucketIndex++;
+            /*creating temporary pointer to point to original
+            array*/
+            oldBuckets = oSymTable->buckets;
+            /*allocating memory for the new bucket array,
+            an array of pointers to nodes. If it fails, keep
+            using old array; new binding was already added. */
+            newBuckets = malloc(auBucketCounts[auBucketIndex] *
+                                sizeof(struct SymTableNode *));
 
-                if (newBuckets == NULL) {
-                    return;
-                }
-                oSymTable->buckets = newBuckets;
-                for (nullBuckets = 0;
-                     nullBuckets < auBucketCounts[auBucketIndex];
-                     nullBuckets++) {
-                    oSymTable->buckets[nullBuckets] = NULL;
-                }
-                oSymTable->numOfBuckets = auBucketCounts[auBucketIndex];
-
-                for (bucketTracker = 0;
-                     bucketTracker < auBucketCounts[preExpandBucket];
-                     bucketTracker++) {
-                    /*rehash the key in the new bucket in the expanded
-                    hash table. Point the pointer in the new bucket to
-                    the node that contains the key*/
-                    for (psCurrentNode = oldBuckets[bucketTracker];
-                         psCurrentNode != NULL;
-                         psCurrentNode = psNodeNext) {
-                        psNodeNext = psCurrentNode->psNextNode;
-                        reHashKeyInBucket = SymTable_hash(
-                            psCurrentNode->pcKey,
-                            auBucketCounts[auBucketIndex]);
-                        psCurrentNode->psNextNode =
-                            oSymTable->buckets[reHashKeyInBucket];
-                        oSymTable->buckets[reHashKeyInBucket] =
-                            psCurrentNode;
-                    }
-                }
-                /*Free the old bucket array only, the nodes are in the
-                new array. */
-                free(oldBuckets);
-                break;
+            if (newBuckets == NULL) {
+                return;
             }
+            oSymTable->buckets = newBuckets;
+            for (nullBuckets = 0;
+                 nullBuckets < auBucketCounts[auBucketIndex];
+                 nullBuckets++) {
+                oSymTable->buckets[nullBuckets] = NULL;
+            }
+            oSymTable->numOfBuckets = auBucketCounts[auBucketIndex];
+
+            for (bucketTracker = 0;
+                 bucketTracker < auBucketCounts[preExpandBucket];
+                 bucketTracker++) {
+                /*rehash the key in the new bucket in the expanded
+                hash table. Point the pointer in the new bucket to
+                the node that contains the key*/
+                for (psCurrentNode = oldBuckets[bucketTracker];
+                     psCurrentNode != NULL;
+                     psCurrentNode = psNodeNext) {
+                    psNodeNext = psCurrentNode->psNextNode;
+                    reHashKeyInBucket =
+                        SymTable_hash(psCurrentNode->pcKey,
+                                      auBucketCounts[auBucketIndex]);
+                    psCurrentNode->psNextNode =
+                        oSymTable->buckets[reHashKeyInBucket];
+                    oSymTable->buckets[reHashKeyInBucket] =
+                        psCurrentNode;
+                }
+            }
+            /*Free the old bucket array only, the nodes are in the
+            new array. */
+            free(oldBuckets);
+            break;
         }
     }
 }
@@ -327,8 +321,14 @@ int SymTable_put(SymTable_T oSymTable, const char *pcKey,
         psNewNode->psNextNode = oSymTable->buckets[keyInBucket];
         oSymTable->buckets[keyInBucket] = psNewNode;
         oSymTable->numOfBindings += 1;
-        /*Calls the expand helper function*/
-        SymTable_expand(oSymTable);
+        /*hash expansion condition. The hash table expands when the 
+        number of bindings exceeds the number of buckets and the number
+        of buckets is not the last bucket size in the auBuckets array */
+        if (oSymTable->numOfBindings > oSymTable->numOfBuckets &&
+            oSymTable->numOfBuckets !=
+                auBucketCounts[auBucketSize - 1]) {
+            SymTable_expand(oSymTable);
+        }
         return 1;
     }
     return 0;

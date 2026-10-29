@@ -32,7 +32,7 @@ interaction, may additionally require the interaction being reported
 to the Committee on Discipline. Write "None" if you used no
 unauthorized sources of information.
 
-None
+Did not use unauthorized sources
 
 ------------------------------------------------------------------------
 In fulfillment of the requirement from section 2.4.3 of the Academic
@@ -153,14 +153,14 @@ The linked list implementation with:
 -- 500 bindings consumed 0.000724 seconds.
 -- 5000 bindings consumed 0.139187 seconds.
 -- 50000 bindings consumed 24.711768 seconds.
--- 500000 bindings consumed over five minutes.
+-- 500000 bindings consumed 23.688144 seconds.
 
 The non-expanding hash table implementation with:
 -- 50 bindings consumed 0.000000 seconds.
--- 500 bindings consumed 0.000000 seconds.
--- 5000 bindings consumed 0.001928 seconds.
--- 50000 bindings consumed 0.165744 seconds.
--- 500000 bindings consumed 35.395499 seconds.
+-- 500 bindings consumed ________ seconds.
+-- 5000 bindings consumed ________ seconds.
+-- 50000 bindings consumed ________ seconds.
+-- 500000 bindings consumed ________ seconds.
 
 The expanding hash table implementation with:
 -- 50 bindings consumed 0.000000 seconds.
